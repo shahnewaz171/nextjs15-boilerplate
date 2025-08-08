@@ -50,27 +50,38 @@ export default defineConfig([
       }
     },
     plugins: {
-      react: react,
-      'react-hooks': reactHooks,
-      'jsx-a11y': jsxA11y,
-      prettier: prettier,
+      '@typescript-eslint': tsPlugin,
       import: importPlugin,
-      '@typescript-eslint': tsPlugin
+      'jsx-a11y': jsxA11y,
+      prettier,
+      react,
+      'react-hooks': reactHooks
     },
     rules: {
+      // base recommended rules
       ...js.configs.recommended.rules,
       ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       ...jsxA11y.configs.recommended.rules,
       ...importPlugin.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
       ...prettierConfig.rules,
 
-      'prettier/prettier': 'error',
+      // prettier formatting
+      'prettier/prettier': [
+        'error',
+        {
+          trailingComma: 'none',
+          singleQuote: true,
+          printWidth: 100,
+          tabWidth: 2,
+          semi: true,
+          endOfLine: 'auto'
+        }
+      ],
 
-      eqeqeq: ['error', 'always'],
-      'prefer-const': 'error',
-      'no-param-reassign': 'error',
+      // typeScript rules
       'no-shadow': 'off',
       '@typescript-eslint/no-shadow': 'error',
       'no-unused-vars': 'off',
@@ -80,14 +91,19 @@ export default defineConfig([
       ],
       'no-unused-expressions': 'off',
       '@typescript-eslint/no-unused-expressions': 'error',
-      'rest-spread-spacing': ['error'],
+
+      // core logic & style
+      eqeqeq: ['error', 'always'],
+      'prefer-const': 'error',
+      'no-param-reassign': 'error',
+      'rest-spread-spacing': 'error',
       'object-curly-spacing': ['error', 'always'],
       'comma-spacing': ['error', { before: false, after: true }],
       'no-multi-spaces': 'error',
       'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 0 }],
       'no-trailing-spaces': ['error', { skipBlankLines: true }],
       'no-whitespace-before-property': 'error',
-      'no-undef': 'error',
+      'no-undef': 'off',
       'no-nested-ternary': 'error',
       'arrow-spacing': 'error',
       'arrow-body-style': ['error', 'as-needed'],
@@ -96,8 +112,64 @@ export default defineConfig([
       'no-console': 'off',
       'max-params': ['error', 4],
       'linebreak-style': 'off',
-      camelcase: ['off', { properties: 'never' }],
+      'consistent-return': 'error',
+      'no-duplicate-imports': 'error',
+      'no-unreachable-loop': 'error',
+      'default-param-last': 'error',
+      'default-case': 'error',
+      'default-case-last': 'error',
+      'dot-notation': 'error',
+      'func-name-matching': 'error',
+      'func-names': 'warn',
+      'guard-for-in': 'error',
+      'max-lines': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
+      'new-cap': 'off',
+      'no-alert': 'warn',
+      'no-array-constructor': 'error',
+      'no-caller': 'error',
+      'no-continue': 'error',
+      'no-else-return': 'error',
+      'no-extra-boolean-cast': 'error',
+      'no-implied-eval': 'error',
+      'no-inline-comments': 'off',
+      'no-lonely-if': 'error',
+      'no-negated-condition': 'error',
+      'no-plusplus': 'error',
+      'no-proto': 'error',
+      'no-regex-spaces': 'error',
+      'no-redeclare': 'error',
+      'no-unneeded-ternary': 'error',
+      'no-unused-labels': 'error',
+      'no-useless-return': 'error',
+      'no-useless-rename': 'error',
+      'object-shorthand': 'error',
+      'prefer-arrow-callback': 'error',
+      'prefer-exponentiation-operator': 'error',
+      'prefer-numeric-literals': 'error',
+      'prefer-object-has-own': 'error',
+      'prefer-promise-reject-errors': ['error', { allowEmptyReject: true }],
+      radix: 'error',
+      'prefer-rest-params': 'error',
+      'prefer-template': 'error',
+      'require-await': 'error',
+      'symbol-description': 'error',
+      'vars-on-top': 'error',
+      yoda: 'error',
+      'one-var': [
+        'error',
+        {
+          const: 'never',
+          let: 'never',
+          var: 'never'
+        }
+      ],
+      'no-loop-func': 'error',
+      'no-multi-assign': ['error', { ignoreNonDeclaration: true }],
+      complexity: ['warn', 10],
+      camelcase: 'off',
 
+      // react-specific
       'react/jsx-filename-extension': ['warn', { extensions: ['.ts', '.tsx'] }],
       'react/function-component-definition': [
         'error',
@@ -105,15 +177,13 @@ export default defineConfig([
           namedComponents: ['arrow-function', 'function-declaration', 'function-expression']
         }
       ],
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-      'react/no-unknown-property': 'off',
+      'react/no-unknown-property': 'error',
       'react/jsx-key': 'error',
       'react/self-closing-comp': 'error',
-      'react-hooks/exhaustive-deps': 'off',
-      'react/state-in-constructor': 'off',
-      'react/destructuring-assignment': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
 
+      // import rules
       'import/order': [
         'error',
         {
@@ -130,12 +200,14 @@ export default defineConfig([
       'import/no-useless-path-segments': ['error', { noUselessIndex: true }],
       'import/no-duplicates': 'error',
 
+      // accessibility
       'jsx-a11y/label-has-associated-control': 'off',
-      'jsx-a11y/label-has-for': 'off',
       'jsx-a11y/click-events-have-key-events': 'off',
 
+      // other
       'no-var': 'error',
-      'no-underscore-dangle': ['off', { allowAfterThis: true }]
+      'no-with': 'error',
+      'no-underscore-dangle': 'off'
     }
   }
 ]);
